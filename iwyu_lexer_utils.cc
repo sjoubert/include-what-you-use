@@ -48,14 +48,27 @@ const char* SourceManagerCharacterDataGetter::GetCharacterData(
   return data;
 }
 
-string GetSourceTextUntilEndOfLine(
+string GetSourceTextUntilLogicalEndOfLine(
     SourceLocation start_loc,
     const CharacterDataGetterInterface& data_getter) {
   const char* data = data_getter.GetCharacterData(start_loc);
-  const char* line_end = strchr(data, '\n');
-  if (!line_end)
-    return data;
-  return string(data, line_end - data);
+  const char* newline_data = 0;
+  bool split_line = false;
+  string source_text;
+  do {
+    newline_data = strchr(data, '\n');
+    if (!newline_data) {
+      source_text.append(data);
+    } else {
+      source_text.append(data, newline_data - data);
+      split_line = (newline_data != data && newline_data[-1] == '\\');
+      if (split_line) {
+        source_text.push_back('\n');
+      }
+      data = newline_data + 1;
+    }
+  } while (newline_data && split_line);
+  return source_text;
 }
 
 SourceLocation GetLocationAfter(
@@ -72,7 +85,7 @@ SourceLocation GetLocationAfter(
 string GetIncludeNameAsWritten(
     SourceLocation include_loc,
     const CharacterDataGetterInterface& data_getter) {
-  const string data = GetSourceTextUntilEndOfLine(include_loc, data_getter);
+  const string data = GetSourceTextUntilLogicalEndOfLine(include_loc, data_getter);
   if (data.empty())
     return data;
   string::size_type endpos = string::npos;

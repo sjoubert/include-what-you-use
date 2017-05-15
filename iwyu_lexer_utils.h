@@ -46,7 +46,11 @@ class SourceManagerCharacterDataGetter : public CharacterDataGetterInterface {
 };
 
 // Returns the source-code line from the current location until \n.
-string GetSourceTextUntilEndOfLine(
+// Lines split using '\' will be resolved to a single source text line, so given
+//    First part \
+//    second part
+// this will return 'First part secondpart'
+string GetSourceTextUntilLogicalEndOfLine(
     clang::SourceLocation start_loc,
     const CharacterDataGetterInterface& data_getter);
 

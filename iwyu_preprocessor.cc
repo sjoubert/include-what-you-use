@@ -98,7 +98,7 @@ static string GetIncludeNameAsWritten(SourceLocation include_loc) {
 // (Case sensitive.)
 static bool IncludeLineHasText(SourceLocation include_loc,
                                const string& text) {
-  const string data = GetSourceTextUntilEndOfLine(include_loc,
+  const string data = GetSourceTextUntilLogicalEndOfLine(include_loc,
                                                   DefaultDataGetter());
   return data.find(text) != string::npos;
 }
@@ -321,7 +321,7 @@ void IwyuPreprocessorInfo::ProcessHeadernameDirectivesInFile(
     if (!current_loc.isValid()) {
       break;
     }
-    const string filename = GetSourceTextUntilEndOfLine(current_loc,
+    const string filename = GetSourceTextUntilLogicalEndOfLine(current_loc,
                                                         DefaultDataGetter());
     // Use "" or <> based on where the file lives.
     string quoted_private_include;
@@ -340,7 +340,7 @@ void IwyuPreprocessorInfo::ProcessHeadernameDirectivesInFile(
       break;
     }
 
-    string after_text = GetSourceTextUntilEndOfLine(current_loc,
+    string after_text = GetSourceTextUntilLogicalEndOfLine(current_loc,
                                                     DefaultDataGetter());
     const string::size_type close_brace_pos = after_text.find('}');
     if (close_brace_pos == string::npos) {
