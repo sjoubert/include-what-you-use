@@ -444,10 +444,10 @@ OneIncludeOrForwardDeclareLine::OneIncludeOrForwardDeclareLine(
 }
 
 OneIncludeOrForwardDeclareLine::OneIncludeOrForwardDeclareLine(
-    const FileEntry* included_file, const string& quoted_include, int linenum)
+    const FileEntry* included_file, const string& quoted_include, int linenum, int lenght)
     : line_("#include " + quoted_include),
       start_linenum_(linenum),
-      end_linenum_(linenum),
+      end_linenum_(linenum + lenght),
       is_desired_(false),
       is_present_(false),
       quoted_include_(quoted_include),
@@ -494,9 +494,9 @@ void IwyuFileInfo::AddAssociatedHeader(const IwyuFileInfo* other) {
 }
 
 void IwyuFileInfo::AddInclude(const clang::FileEntry* includee,
-                              const string& quoted_includee, int linenumber) {
+                              const string& quoted_includee, int linenumber, int lenght) {
   OneIncludeOrForwardDeclareLine new_include(includee, quoted_includee,
-                                             linenumber);
+                                             linenumber, lenght);
   new_include.set_present();
 
   // It's possible for the same #include to be seen multiple times

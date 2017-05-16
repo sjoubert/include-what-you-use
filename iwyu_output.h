@@ -116,7 +116,7 @@ class OneIncludeOrForwardDeclareLine {
  public:
   explicit OneIncludeOrForwardDeclareLine(const clang::NamedDecl* fwd_decl);
   OneIncludeOrForwardDeclareLine(const clang::FileEntry* included_file,
-                                 const string& quoted_include, int linenum);
+                                 const string& quoted_include, int linenum, int lenght = 0);
 
   const string& line() const { return line_; }
   bool IsIncludeLine() const;           // vs forward-declare line
@@ -212,7 +212,7 @@ class IwyuFileInfo {
   // a forward-declaration or a using-declaration.
 
   void AddInclude(const clang::FileEntry* includee,
-                  const string& quoted_includee, int linenumber);
+                  const string& quoted_includee, int linenumber, int length = 0);
   // definitely_keep_fwd_decl tells us that we should never suggest
   // the fwd-decl be removed, even if we don't see any uses of it.
   void AddForwardDeclare(const clang::NamedDecl* fwd_decl,
